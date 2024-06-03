@@ -1,0 +1,59 @@
+<?php
+namespace config;
+
+use PDO;
+use PDOException;
+
+if (file_exists(__DIR__ . "/server.php")) {
+    require_once __DIR__ . "/server.php";
+}
+
+class dataBase {
+    private static $instance = null;
+    private $pdo;
+    private $server;
+    private $name;
+    private $user;
+    private $pass;
+
+    // El constructor debe ser protegido para evitar múltiples instancias
+    protected function __construct() {
+        $this->server   = DB_SERVER;
+        $this->name       = DB_NAME;
+        $this->user     = DB_USER;
+        $this->pass     = DB_PASS;
+    }
+
+    // Método para obtener la instancia singleton de la clase
+    public static function getInstance() {
+        if (self::$instance === null) {
+            self::$instance = new self();
+        }
+        return self::$instance;
+    }
+
+    // Método para obtener la conexión PDO
+    public function conectar() {
+        if ($this->pdo === null) {
+            $dsn = "mysql:host=" . $this->server . ";dbname=" . $this->name . ";charset=utf8mb4";
+            $options = [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                PDO::ATTR_EMULATE_PREPARES => false,
+            ];
+
+            try {
+                $this->pdo = new PDO($dsn, $this->user, $this->pass, $options);
+            } catch (PDOException $e) {
+                throw new PDOException('Database connection error: ' . $e->getMessage());
+            }
+        }
+        return $this->pdo;
+    }
+
+    // Evitar la clonación de la instancia singleton
+   private function __clone() {}
+
+    // Evitar la deserialización de la instancia singleton
+   //private function __wakeup() {}
+}
