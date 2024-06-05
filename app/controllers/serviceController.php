@@ -236,16 +236,16 @@ class serviceController extends mainModel
         // Consultas SQL
         if (isset($busqueda) && $busqueda != "") {
             $consulta_datos = "
-                SELECT s.service_id, s.service_fecha, s.service_detalle, d.address_name, c.cliente_email, u.usuario_nombre 
+                SELECT s.service_id, s.service_fecha, s.service_detalle, d.address_name, u.usuario_email, o.usuario_id
                 FROM servicio s
                 JOIN direccion d ON s.address_id = d.address_id
-                JOIN cliente c ON s.cliente_id = c.cliente_id
-                JOIN oficio_por u ON s.usuario_id = u.usuario_id
+                JOIN usuario u ON s.cliente_id = u.usuario_id
+                JOIN oficio_por o ON s.usuario_id = o.usuario_id
                 WHERE 
                     (d.address_name LIKE '%$busqueda%' 
-                    OR c.cliente_email LIKE '%$busqueda%' 
+                    OR u.usuario_email LIKE '%$busqueda%' 
                     OR s.service_detalle LIKE '%$busqueda%' 
-                    OR u.usuario_nombre LIKE '%$busqueda%') 
+                    OR o.usuario_id LIKE '%$busqueda%') 
                 ORDER BY s.service_fecha ASC 
                 LIMIT $inicio, $registros";
 
@@ -253,20 +253,20 @@ class serviceController extends mainModel
                 SELECT COUNT(s.service_id) 
                 FROM servicio s
                 JOIN direccion d ON s.address_id = d.address_id
-                JOIN cliente c ON s.cliente_id = c.cliente_id
-                JOIN oficio_por u ON s.usuario_id = u.usuario_id
+                JOIN usuario u ON s.cliente_id = u.usuario_id
+                JOIN oficio_por o ON s.usuario_id = o.usuario_id
                 WHERE 
                     (d.address_name LIKE '%$busqueda%' 
-                    OR c.cliente_email LIKE '%$busqueda%' 
+                    OR u.cliente_email LIKE '%$busqueda%' 
                     OR s.service_detalle LIKE '%$busqueda%' 
-                    OR u.usuario_nombre LIKE '%$busqueda%')";
+                    OR o.usuario_id LIKE '%$busqueda%')";
         } else {
             $consulta_datos = "
-                SELECT s.service_id, s.service_fecha, s.service_detalle, d.address_name, c.cliente_email, u.usuario_nombre 
+                SELECT s.service_id, s.service_fecha, s.service_detalle, d.address_name, u.usuario_email, o.usuario_id
                 FROM servicio s
                 JOIN direccion d ON s.address_id = d.address_id
-                JOIN cliente c ON s.cliente_id = c.cliente_id
-                JOIN oficio_por u ON s.usuario_id = u.usuario_id
+                JOIN usuario u ON s.cliente_id = u.usuario_id
+                JOIN oficio_por o ON s.usuario_id = o.usuario_id
                 ORDER BY s.service_fecha ASC 
                 LIMIT $inicio, $registros";
 
@@ -274,8 +274,8 @@ class serviceController extends mainModel
                 SELECT COUNT(s.service_id) 
                 FROM servicio s
                 JOIN direccion d ON s.address_id = d.address_id
-                JOIN cliente c ON s.cliente_id = c.cliente_id
-                JOIN oficio_por u ON s.usuario_id = u.usuario_id";
+                JOIN usuario u ON s.cliente_id = u.usuario_id
+                JOIN oficio_por o ON s.usuario_id = o.usuario_id";
         }
 
         // Ejecutar consultas
@@ -298,7 +298,7 @@ class serviceController extends mainModel
                             <th class="has-text-centered">Dirección</th>
                             <th class="has-text-centered">Detalle del Servicio</th>
                             <th class="has-text-centered">Email del Cliente</th>
-                            <th class="has-text-centered">Nombre del Usuario</th>
+                            <th class="has-text-centered">Id del Tecnico</th>
                             <th class="has-text-centered" colspan="2">Opciones</th>
                         </tr>
                     </thead>
@@ -315,14 +315,14 @@ class serviceController extends mainModel
                         <td>' . date("d-m-Y  h:i:s A", strtotime($rows['service_fecha'])) . '</td>
                         <td>' . $rows['address_name'] . '</td>
                         <td>' . $rows['service_detalle'] . '</td>
-                        <td>' . $rows['cliente_email'] . '</td>
-                        <td>' . $rows['usuario_nombre'] . '</td>
+                        <td>' . $rows['usuario_email'] . '</td>
+                        <td>' . $rows['usuario_id'] . '</td>
                         <td>
                             <a href="' . APP_URL . 'serviceUpdate/' . $rows['service_id'] . '/" class="button is-success is-rounded is-small">Actualizar</a>
                         </td>
                         <td>
                             <form class="FormularioAjax" action="' . APP_URL . 'app/ajax/serviceAjax.php" method="POST" autocomplete="off">
-                                <input type="hidden" name="modulo_servicio" value="eliminar">
+                                <input type="hidden" name="modulo_service" value="eliminar">
                                 <input type="hidden" name="service_id" value="' . $rows['service_id'] . '">
                                 <button type="submit" class="button is-danger is-rounded is-small">Eliminar</button>
                             </form>
@@ -404,7 +404,7 @@ class serviceController extends mainModel
 			$alerta = [
 				"tipo" => "recargar",
 				"titulo" => "Servicio eliminado",
-				"texto" => "El cliente " . $datos['service_id'] . " " . $datos['cliente_id'] . " ha sido eliminado del sistema correctamente",
+				"texto" => "El SERVICIO  " . $datos['service_id'] . " ha sido eliminado del sistema correctamente",
 				"icono" => "success"
 			];
 		} else {
@@ -412,7 +412,7 @@ class serviceController extends mainModel
 			$alerta = [
 				"tipo" => "simple",
 				"titulo" => "Ocurrió un error inesperado",
-				"texto" => "No hemos podido eliminar el servicio " . $datos['servicio_id'] . " " . $datos['cliente_id'] . " del sistema, por favor intente nuevamente",
+				"texto" => "No hemos podido eliminar el servicio " . $datos['servicio_id'] . " del sistema, por favor intente nuevamente",
 				"icono" => "error"
 			];
 		}

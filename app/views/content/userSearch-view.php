@@ -32,7 +32,7 @@
         <div class="column">
             <form class="has-text-centered mt-6 mb-6 FormularioAjax" action="<?php echo APP_URL; ?>app/ajax/buscadorAjax.php" method="POST" autocomplete="off" >
                 <input type="hidden" name="modulo_buscador" value="eliminar">
-                <input type="hidden" name="modulo_url" value="<?php echo $url[0]; ?>"
+                <input type="hidden" name="modulo_url" value="<?php echo $url[0]; ?>">
                 <p>Estas buscando <strong>“<?php echo $_SESSION[$url[0]]; ?>”</strong></p>
                 <br>
                 <button type="submit" class="button is-danger is-rounded">Eliminar busqueda</button>
