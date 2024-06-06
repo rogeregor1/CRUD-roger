@@ -1,17 +1,20 @@
 <?php
 namespace app\controllers;
+
 use app\models\mainModel;
 
-class loginController extends mainModel{
+class loginController extends mainModel
+{
 
     /*----------  Controlador iniciar sesion  ----------*/
-    public function iniciarSesionControlador(){
+    public function iniciarSesionControlador()
+    {
 
-        $usuario=$this->limpiarCadena($_POST['login_usuario']);
-        $clave=$this->limpiarCadena($_POST['login_clave']);
+        $usuario = $this->limpiarCadena($_POST['login_usuario']);
+        $clave = $this->limpiarCadena($_POST['login_clave']);
 
         # Verificando campos obligatorios #
-        if($usuario=="" || $clave==""){
+        if ($usuario == "" || $clave == "") {
             echo "<script>
                 Swal.fire({
                   icon: 'error',
@@ -22,7 +25,7 @@ class loginController extends mainModel{
         } else {
 
             # Verificando integridad de los datos #
-            if($this->verificarDatos("[a-zA-Z0-9$@#.-]{4,100}", $usuario)){
+            if ($this->verificarDatos("[a-zA-Z0-9$@#.-]{4,100}", $usuario)) {
                 echo "<script>
                     Swal.fire({
                       icon: 'error',
@@ -33,7 +36,7 @@ class loginController extends mainModel{
                 exit();
             } else {
                 # Verificando integridad de los datos #
-                if($this->verificarDatos("[a-zA-Z0-9$@#.-]{7,255}", $clave)){
+                if ($this->verificarDatos("[a-zA-Z0-9$@#.-]{7,255}", $clave)) {
                     echo "<script>
                         Swal.fire({
                           icon: 'error',
@@ -45,59 +48,63 @@ class loginController extends mainModel{
                 } else {
 
                     # Verificando usuario #
-                    $check_usuario=$this->ejecutarConsulta("SELECT * FROM usuario WHERE usuario_usuario='$usuario'");
+                    $consulta = "SELECT * FROM usuario WHERE usuario_usuario='$usuario'";
 
-                    if($check_usuario->rowCount()==1){
-                        $check_usuario=$check_usuario->fetch();
+                    $check_login = mainModel::ejecutarConsulta($consulta);
 
-                        if($check_usuario['usuario_usuario']==$usuario && password_verify($clave,$check_usuario['usuario_clave'])){
+                    if ($check_login->rowCount() == 1) {
+                        $check_usuario = $check_login->fetch();
 
-                            $_SESSION['id']=$check_usuario['usuario_id'];
-                            $_SESSION['nombre']=$check_usuario['usuario_nombre'];
-                            $_SESSION['apellido']=$check_usuario['usuario_apellido'];
-                            $_SESSION['usuario']=$check_usuario['usuario_usuario'];
-                            $_SESSION['email']=$check_usuario['usuario_email'];
-                            $_SESSION['rol']=$check_usuario['usuario_rol'];
-                            $_SESSION['foto']=$check_usuario['usuario_foto'];
+                        if ($check_usuario['usuario_usuario'] == $usuario && password_verify($clave, $check_usuario['usuario_clave'])) {
+
+                            session_start(['name' => APP_SESSION_NAME]);
+                            $_SESSION['rol'] = $check_usuario['usuario_rol'];
+                            $_SESSION['id'] = $check_usuario['usuario_id'];
+
+                            $_SESSION['nombre'] = $check_usuario['usuario_nombre'];
+                            $_SESSION['apellido'] = $check_usuario['usuario_apellido'];
+                            $_SESSION['usuario'] = $check_usuario['usuario_usuario'];
+                            $_SESSION['email'] = $check_usuario['usuario_email'];
+                            $_SESSION['foto'] = $check_usuario['usuario_foto'];
 
                             # Insertar registro de inicio de sesión en bitacora
                             $usuario_id = $_SESSION['id'];
-                            $bitacora_tipo = 'Inicio_sesion';
-                            $bitacora_detalle = 'Sesión iniciada correctamente';
-                            $this->ejecutarConsulta("INSERT INTO bitacora (bitacora_tipo, bitacora_detalle, usuario_id) VALUES ('$bitacora_tipo', '$bitacora_detalle', '$usuario_id')");
+                            $tipo = 'Inicio_sesion';
+                            $detalle = 'Sesión iniciada correctamente';
+                            mainModel::ejecutarConsulta("INSERT INTO bitacora (bitacora_tipo, bitacora_detalle, usuario_id) VALUES ('$tipo', '$detalle', '$usuario_id')");
 
-                            switch($_SESSION['rol']){
-                                case ($_SESSION['rol']=="Administrador"):
-                                    if(headers_sent()){
-                                        echo "<script> window.location.href='".APP_URL."dashBoard/'; </script>";
+                            switch ($_SESSION['rol']) {
+                                case ($_SESSION['rol'] == "Administrador"):
+                                    if (headers_sent()) {
+                                        echo "<script> window.location.href='" . APP_URL . "dashBoard/'; </script>";
                                     } else {
-                                        header("Location: ".APP_URL."dashBoard/");
+                                        header("Location: " . APP_URL . "dashBoard/");
                                     }
-                                break;
+                                    break;
 
-                                case ($_SESSION['rol']=="Colaborador"):
-                                    if(headers_sent()){
-                                        echo "<script> window.location.href='".APP_URL."colaboradorBoard/'; </script>";
+                                case ($_SESSION['rol'] == "Colaborador"):
+                                    if (headers_sent()) {
+                                        echo "<script> window.location.href='" . APP_URL . "colaboradorBoard/'; </script>";
                                     } else {
-                                        header("Location: ".APP_URL."colaboradorBoard/");
+                                        header("Location: " . APP_URL . "colaboradorBoard/");
                                     }
-                                break;
+                                    break;
 
-                                case ($_SESSION['rol']=="Cliente"):
-                                    if(headers_sent()){
-                                        echo "<script> window.location.href='".APP_URL."clienteBoard/'; </script>";
+                                case ($_SESSION['rol'] == "Cliente"):
+                                    if (headers_sent()) {
+                                        echo "<script> window.location.href='" . APP_URL . "clienteBoard/'; </script>";
                                     } else {
-                                        header("Location: ".APP_URL."clienteBoard/");
+                                        header("Location: " . APP_URL . "clienteBoard/");
                                     }
-                                break;
+                                    break;
 
-                                case ($_SESSION['rol']=="Tecnico"):
-                                    if(headers_sent()){
-                                        echo "<script> window.location.href='".APP_URL."tecnicoBoard/'; </script>";
+                                case ($_SESSION['rol'] == "Tecnico"):
+                                    if (headers_sent()) {
+                                        echo "<script> window.location.href='" . APP_URL . "tecnicoBoard/'; </script>";
                                     } else {
-                                        header("Location: ".APP_URL."tecnicoBoard/");
+                                        header("Location: " . APP_URL . "tecnicoBoard/");
                                     }
-                                break;
+                                    break;
                             }
 
                         } else {
@@ -125,19 +132,20 @@ class loginController extends mainModel{
     }
 
     /*----------  Controlador cerrar sesion  ----------*/
-    public function cerrarSesionControlador(){
+    public function cerrarSesionControlador()
+    {
 
         $usuario_id = $_SESSION['id'];
         $bitacora_tipo = 'Cerrar_sesion';
         $bitacora_detalle = 'Sesión cerrada correctamente';
-        $this->ejecutarConsulta("INSERT INTO bitacora (bitacora_tipo, bitacora_detalle, usuario_id) VALUES ('$bitacora_tipo', '$bitacora_detalle', '$usuario_id')");
+        mainModel::ejecutarConsulta("INSERT INTO bitacora (bitacora_tipo, bitacora_detalle, usuario_id) VALUES ('$bitacora_tipo', '$bitacora_detalle', '$usuario_id')");
 
         session_destroy();
 
-        if(headers_sent()){
-            echo "<script> window.location.href='".APP_URL."login/'; </script>";
+        if (headers_sent()) {
+            echo "<script> window.location.href='" . APP_URL . "login/'; </script>";
         } else {
-            header("Location: ".APP_URL."login/");
+            header("Location: " . APP_URL . "login/");
         }
     }
 

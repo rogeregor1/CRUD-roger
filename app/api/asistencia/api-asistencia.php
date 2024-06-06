@@ -5,18 +5,18 @@ use app\api\asistencia\asistencia;
 if(isset($_GET['action'])){
 
     $accion = $_GET['action'];
-    $carrito = new Asistencia();
+    $sat = new Asistencia();
     switch($accion){
-        case 'mostrar':
-        mostrar($carrito);
+        case 'mostrarSolicitudes':
+        mostrar($sat);
         break;
 
-        case 'add':
-        add($carrito);
+        case 'addSolicitud':
+        add($sat);
         break;
 
-        case 'remove':
-        remove($carrito);
+        case 'removeSolicitud':
+        remove($sat);
         break;
 
         default:
@@ -26,17 +26,18 @@ if(isset($_GET['action'])){
                         'response' => 'No se puede procesar la solicitud']);
 }
 
-function mostrar($oficio){
+function mostrarSolicitudes($oficio){
     $itemsOficios = json_decode($oficio->load(), 1);
     $fullItems = [];
     $total = 0;
     $totalItems = 0;
-    foreach($itemsOficios as $itemOficio){
-        $httpRequest = file_get_contents('http://localhost/CRUD-roger/app/api/oficioPor/api-oficios.php?get-item=' .$itemOficio['id']); 
+    foreach($itemsOficios as $itemProducto){
+        $httpRequest = file_get_contents('http://localhost/CRUD-roger/app/api/oficioPor/api-oficios.php?get-item=' .$itemProducto['id']); 
         $itemProducto = json_decode($httpRequest, 1)['item'];
-        $itemProducto['cantidad'] = $itemOficio['cantidad'];
-        $itemProducto['stock'];
-        $itemProducto['subtotal'] = $itemProducto['cantidad'] * $itemProducto['precio'];
+        $itemProducto['usuario_id'];
+        $itemProducto['category_id'];
+        $itemProducto['service_tipo'];
+        $itemProducto['subtotal'] = $itemProducto['oficio_precio'];
         $total += $itemProducto['subtotal'];
         $totalItems += $itemProducto['cantidad'];
         array_push($fullItems, $itemProducto);
@@ -46,18 +47,18 @@ function mostrar($oficio){
     echo json_encode($resArray);
 }
 
-function add($carrito){
+function addSolicitud($sat){
     if(isset($_GET['id'])) {
-            $res = $carrito->add($_GET['id']);
+            $res = $sat->add($_GET['id']);
             echo $res;
     }else{
         echo json_encode(['statuscode' => 400]);
     }
 }
 
-function remove($carrito){
+function removeSolicitud($sat){
     if(isset($_GET['id'])){
-        $res = $carrito->remove($_GET['id']);
+        $res = $sat->remove($_GET['id']);
         if($res){
             echo json_encode(['statuscode' => 200]);
         }else{
