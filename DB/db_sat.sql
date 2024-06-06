@@ -77,6 +77,7 @@ CREATE TABLE IF NOT EXISTS `db_sat`.`usuario` (
   `address_id` INT(10) UNSIGNED NOT NULL,
   `usuario_creado` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `usuario_actualizado` TIMESTAMP NULL,
+  `usuario_estado` ENUM('Activa', 'Inactiva') NOT NULL DEFAULT 'Activa',
   PRIMARY KEY (`usuario_id`),
   CONSTRAINT `fk_usuario_direccion`
     FOREIGN KEY (`address_id`)
@@ -101,6 +102,7 @@ CREATE TABLE IF NOT EXISTS `db_sat`.`oficio_por` (
   `usuario_id` INT(10) UNSIGNED NOT NULL,
   `category_id` INT(10) UNSIGNED NOT NULL,
   `service_tipo` ENUM('Instalacion', 'Mantenimiento', 'Reparacion', 'Desguace') NOT NULL,
+  `oficio_precio` decimal(30,2) NOT NULL DEFAULT '0.00',
   PRIMARY KEY (`oficio_por_id`),
   -- INDEX `fk_oficio_por_usuario_idx` (`usuario_id` ASC) VISIBLE,
   CONSTRAINT `fk_oficio_por_usuario`
@@ -119,8 +121,8 @@ CREATE TABLE IF NOT EXISTS `db_sat`.`oficio_por` (
 -- CREATE INDEX `idx_off_usuario` ON `db_sat`.`oficio_usuario` (`usuario_id` ASC) VISIBLE;
 -- CREATE INDEX `idx_off_oficio` ON `db_sat`.`oficio_usuario` (`oficio_id` ASC) VISIBLE;
 
-INSERT INTO `db_sat`.`oficio_por` (`oficio_por_id`, `usuario_id`, `category_id`, `service_tipo`) VALUES ('1', '2', '1', 'Reparacion');
-INSERT INTO `db_sat`.`oficio_por` (`oficio_por_id`, `usuario_id`, `category_id`, `service_tipo`) VALUES ('2', '2', '1', 'Instalacion');
+INSERT INTO `db_sat`.`oficio_por` (`oficio_por_id`, `usuario_id`, `category_id`, `service_tipo`) VALUES ('1', '2', '1', 'Reparacion', '100.00');
+INSERT INTO `db_sat`.`oficio_por` (`oficio_por_id`, `usuario_id`, `category_id`, `service_tipo`) VALUES ('2', '2', '1', 'Instalacion', '150.00');
 
 
 -- -----------------------------------------------------

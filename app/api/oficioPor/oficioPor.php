@@ -15,7 +15,8 @@ class OficioPor extends mainModel{
             'id'            => $row['oficio_por_id'],
             'usuario_id'    => $row['usuario_id'],
             'category_id'   => $row['category_id'],
-            'service_tipo'  => $row['service_tipo']
+            'service_tipo'  => $row['service_tipo'],
+            'oficio_precio'  => $row['oficio_precio']
                 ];
     }
 
@@ -29,7 +30,8 @@ class OficioPor extends mainModel{
                 'id'            => $row['oficio_por_id'],
                 'usuario_id'    => $row['usuario_id'],
                 'category_id'   => $row['category_id'],
-                'service_tipo'  => $row['service_tipo']
+                'service_tipo'  => $row['service_tipo'],
+                'oficio_precio'  => $row['oficio_precio']
                     ];
             array_push($items, $item);
         }

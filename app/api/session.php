@@ -12,7 +12,7 @@ class Session{
             $_SESSION[$session_name] = NULL;
             echo "Sesión $session_name creada";
         }
-        //echo "Sesión $session_name ya existe";
+        //echo "Sesión $session_name creada";
         
         $this->session = $session_name;
     }
