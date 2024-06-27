@@ -20,8 +20,12 @@
 		if($_POST['modulo_service']=="actualizar"){
 			echo $insService->actualizarServiceControlador();
 		}
+		if($_POST['modulo_service']=="updateState"){
+			echo $insService->actualizarEstadoServicioControlador();
+		}
 
 	}else{
 		session_destroy();
 		header("Location: ".APP_URL."login/");
+		exit();
 	}

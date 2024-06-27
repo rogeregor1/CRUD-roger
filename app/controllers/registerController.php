@@ -1,27 +1,23 @@
 <?php
 namespace app\controllers;
-
 use app\models\mainModel;
 
 class registerController extends mainModel
 {
-
     /*----------  Controlador registro de users ----------*/
-    public function registerUser()
-    {
+    public function registerController(){
 
         /*== Almacenando datos en variables ==*/
-        $nombre = $this->limpiarCadena($_POST['nombre']);
-        $apellido = $this->limpiarCadena($_POST['apellido']);
-        $usuario = $this->limpiarCadena($_POST['username']);
+        $nombre = $this->limpiarCadena($_POST['nomb']);
+        $apellido = $this->limpiarCadena($_POST['apell']);
+        $usuario = $this->limpiarCadena($_POST['user']);
         $clave1 = $this->limpiarCadena($_POST['password1']);
         $clave2 = $this->limpiarCadena($_POST['password2']);
         $email = $this->limpiarCadena($_POST['email']);
         $rol = $this->limpiarCadena($_POST['rol']);
         $agree = $this->limpiarCadena($_POST['agree']);
 
-
-        # Verificando campos obligatorios #
+        # Verificando campos vacios #
         if ($nombre == "" || $apellido == "" || $usuario == "" || $email == "" || $clave1 == "" || $clave2 == "" || $rol == "" || $agree == "") {
             $alerta = [
                 "tipo" => "simple",
@@ -31,7 +27,8 @@ class registerController extends mainModel
             ];
             return json_encode($alerta);
             exit();
-        }
+
+        }else{
 
         # Verificando integridad de los datos #
         if ($this->verificarDatos("[a-zA-ZáéíóúÁÉÍÓÚñÑ ]{3,40}", $nombre)) {
@@ -80,7 +77,7 @@ class registerController extends mainModel
         }
         
         // Validar que el checkbox está marcado
-        if ($agree !== 'checked') {
+        if ($agree != 'checked') {
             $alerta = [
                 "tipo" => "simple",
                 "titulo" => "Ocurrió un error inesperado",
@@ -207,5 +204,22 @@ class registerController extends mainModel
         }
         return json_encode($alerta);
         exit();
+    }
+}
+    public function cerrarSesionControlador(){
+
+        $usuario_id = $_SESSION['id'];
+        $bitacora_tipo = 'Cerrar_sesion';
+        $bitacora_detalle = 'Sesión cerrada correctamente';
+        $this->ejecutarConsulta("INSERT INTO bitacora (bitacora_tipo, bitacora_detalle, usuario_id) VALUES ('$bitacora_tipo', '$bitacora_detalle', '$usuario_id')");
+        
+        session_unset();
+        session_destroy();
+
+        if(headers_sent()){
+            echo "<script> window.location.href='".APP_URL."login/'; </script>";
+        } else {
+            header("Location: ".APP_URL."login/");
+        }
     }
 }

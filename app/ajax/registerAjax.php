@@ -11,10 +11,13 @@
 		$regUser = new registerController();
 
 		if($_POST['modulo_register']=="registrar"){
-			echo $regUser->registerUser();
+			echo $regUser->registerController();
 		}
 		
 	}else{
+		session_start(['session_name'=>'SERVICIOS']);
+		session_unset();
 		session_destroy();
 		header("Location: ".APP_URL."login/");
+		exit();
 	}

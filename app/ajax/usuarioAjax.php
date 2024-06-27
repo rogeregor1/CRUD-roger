@@ -29,8 +29,14 @@
 		if($_POST['modulo_usuario']=="actualizarFoto"){
 			echo $insUsuario->actualizarFotoUsuarioControlador();
 		}
+		if($_POST['modulo_usuario']=="updateState"){
+			echo $insusuario->actualizarEstadoServicioControlador();
+		}
 		
 	}else{
+		session_start(['session_name'=>'SERVICIOS']);
+		session_unset();
 		session_destroy();
 		header("Location: ".APP_URL."login/");
+		exit();
 	}

@@ -1,6 +1,6 @@
 <?php
 	namespace app\controllers;
-	
+
 	use app\models\mainModel;
 
 	class userController extends mainModel{
@@ -106,6 +106,7 @@
 				$clave=password_hash($clave1,PASSWORD_BCRYPT,["cost"=>10]);
             }
 
+			 # Verificando rol #
 			if($this->verificarDatos("[a-zA-ZáéíóúÁÉÍÓÚñÑ ]{3,40}",$rol)){
 		    	$alerta=[
 					"tipo"=>"simple",
@@ -301,9 +302,9 @@
 
 			if(isset($busqueda) && $busqueda!=""){
 
-				$consulta_datos="SELECT * FROM usuario WHERE ((usuario_id!='".$_SESSION['id']."' AND usuario_id!='1') AND (usuario_nombre LIKE '%$busqueda%' OR usuario_apellido LIKE '%$busqueda%' OR usuario_email LIKE '%$busqueda%' OR usuario_usuario LIKE '%$busqueda%' OR rol LIKE '%$busqueda%')) ORDER BY usuario_nombre ASC LIMIT $inicio,$registros";
+				$consulta_datos="SELECT * FROM usuario WHERE ((usuario_id!='".$_SESSION['id']."' AND usuario_id!='1') AND (usuario_nombre LIKE '%$busqueda%' OR usuario_apellido LIKE '%$busqueda%' OR usuario_email LIKE '%$busqueda%' OR usuario_usuario LIKE '%$busqueda%' OR usuario_rol LIKE '%$busqueda%')) ORDER BY usuario_nombre ASC LIMIT $inicio,$registros";
 
-				$consulta_total="SELECT COUNT(usuario_id) FROM usuario WHERE ((usuario_id!='".$_SESSION['id']."' AND usuario_id!='1') AND (usuario_nombre LIKE '%$busqueda%' OR usuario_apellido LIKE '%$busqueda%' OR usuario_email LIKE '%$busqueda%' OR usuario_usuario LIKE '%$busqueda%' OR rol LIKE '%$busqueda%'))";
+				$consulta_total="SELECT COUNT(usuario_id) FROM usuario WHERE ((usuario_id!='".$_SESSION['id']."' AND usuario_id!='1') AND (usuario_nombre LIKE '%$busqueda%' OR usuario_apellido LIKE '%$busqueda%' OR usuario_email LIKE '%$busqueda%' OR usuario_usuario LIKE '%$busqueda%' OR usuario_rol LIKE '%$busqueda%'))";
 
 			}else{
 
@@ -349,7 +350,7 @@
 							<td>'.$rows['usuario_nombre'].' '.$rows['usuario_apellido'].'</td>
 							<td>'.$rows['usuario_email'].'</td>
 							<td>'.$rows['usuario_usuario'].'</td>
-							<td>'.$rows['rol'].'</td>
+							<td>'.$rows['usuario_rol'].'</td>
 							<td>'.date("d-m-Y  h:i:s A",strtotime($rows['usuario_creado'])).'</td>
 							<td>'.date("d-m-Y  h:i:s A",strtotime($rows['usuario_actualizado'])).'</td>
 							<td>
@@ -481,6 +482,7 @@
 					"icono"=>"error"
 				];
 				return json_encode($alerta);
+				exit();
 		    }else{
 		    	$datos=$datos->fetch();
 		    }
@@ -497,6 +499,7 @@
 					"icono"=>"error"
 				];
 				return json_encode($alerta);
+				exit();
 		    }
 
 		    if($this->verificarDatos("[a-zA-Z0-9]{4,20}",$admin_usuario)){
@@ -507,6 +510,7 @@
 					"icono"=>"error"
 				];
 				return json_encode($alerta);
+				exit();
 		    }
 
 		    if($this->verificarDatos("[a-zA-Z0-9$@.-]{7,100}",$admin_clave)){
@@ -517,10 +521,11 @@
 					"icono"=>"error"
 				];
 				return json_encode($alerta);
+				exit();
 		    }
 
 		    # Verificando administrador #
-		    $check_admin=mainModel::ejecutarConsulta("SELECT * FROM usuario WHERE usuario_usuario='$admin_usuario' AND usuario_id='".$_SESSION['id']."'");
+		    $check_admin=mainModel::ejecutarConsulta("SELECT usuario_usuario, usuario_clave FROM usuario WHERE usuario_usuario='$admin_usuario' AND usuario_id='".$_SESSION['id']."'");
 		    if($check_admin->rowCount()==1){
 
 		    	$check_admin=$check_admin->fetch();
@@ -534,6 +539,7 @@
 						"icono"=>"error"
 					];
 					return json_encode($alerta);
+					exit();
 		    	}
 		    }else{
 		        $alerta=[
@@ -543,6 +549,7 @@
 					"icono"=>"error"
 				];
 				return json_encode($alerta);
+				exit();
 		    }
 
 
@@ -555,7 +562,7 @@
 		    $clave2=$this->limpiarCadena($_POST['usuario_clave_2']);
 
 		    # Verificando campos obligatorios #
-		    if($nombre=="" || $apellido=="" || $usuario==""){
+		    if($nombre=="" || $apellido=="" || $usuario=="" || $email=="" || $clave1=="" || $clave2==""){
 		        $alerta=[
 					"tipo"=>"simple",
 					"titulo"=>"Ocurrió un error inesperado",
@@ -563,6 +570,7 @@
 					"icono"=>"error"
 				];
 				return json_encode($alerta);
+				exit();
 		    }
 
 		    # Verificando integridad de los datos #
@@ -574,6 +582,7 @@
 					"icono"=>"error"
 				];
 				return json_encode($alerta);
+				exit();
 		    }
 
 		    if($this->verificarDatos("[a-zA-ZáéíóúÁÉÍÓÚñÑ ]{3,40}",$apellido)){
@@ -584,6 +593,7 @@
 					"icono"=>"error"
 				];
 				return json_encode($alerta);
+				exit();
 		    }
 
 		    if($this->verificarDatos("[a-zA-Z0-9]{4,20}",$usuario)){
@@ -594,6 +604,7 @@
 					"icono"=>"error"
 				];
 				return json_encode($alerta);
+				exit();
 		    }
 
 		    # Verificando email #
@@ -608,6 +619,7 @@
 							"icono"=>"error"
 						];
 						return json_encode($alerta);
+						exit();
 					}
 				}else{
 					$alerta=[
@@ -617,6 +629,7 @@
 						"icono"=>"error"
 					];
 					return json_encode($alerta);
+					exit();
 				}
             }
 
@@ -631,6 +644,7 @@
 						"icono"=>"error"
 					];
 					return json_encode($alerta);
+					exit();
 			    }else{
 			    	if($clave1!=$clave2){
 
@@ -641,6 +655,7 @@
 							"icono"=>"error"
 						];
 						return json_encode($alerta);
+						exit();
 			    	}else{
 			    		$clave=password_hash($clave1,PASSWORD_BCRYPT,["cost"=>10]);
 			    	}
@@ -660,6 +675,7 @@
 						"icono"=>"error"
 					];
 					return json_encode($alerta);
+					exit();
 			    }
             }
 
@@ -744,6 +760,7 @@
 					"icono"=>"error"
 				];
 				return json_encode($alerta);
+				exit();
 		    }else{
 		    	$datos=$datos->fetch();
 		    }
@@ -765,6 +782,7 @@
 						"icono"=>"error"
 					];
 					return json_encode($alerta);
+					exit();
 		        }
 		    }else{
 		    	$alerta=[
@@ -774,6 +792,7 @@
 					"icono"=>"error"
 				];
 				return json_encode($alerta);
+				exit();
 		    }
 
 		    $usuario_datos_up=[
@@ -835,6 +854,7 @@
 					"icono"=>"error"
 				];
 				return json_encode($alerta);
+				exit();
 		    }else{
 		    	$datos=$datos->fetch();
 		    }
@@ -851,6 +871,7 @@
 					"icono"=>"error"
 				];
 				return json_encode($alerta);
+				exit();
     		}
 
     		# Creando directorio #
@@ -863,6 +884,7 @@
 						"icono"=>"error"
 					];
 					return json_encode($alerta);
+					exit();
 	            } 
 	        }
 
@@ -875,6 +897,7 @@
 					"icono"=>"error"
 				];
 				return json_encode($alerta);
+				exit();
 	        }
 
 	        # Verificando peso de imagen #
@@ -886,6 +909,7 @@
 					"icono"=>"error"
 				];
 				return json_encode($alerta);
+				exit();
 	        }
 
 	        # Nombre de la foto #
@@ -919,6 +943,7 @@
 					"icono"=>"error"
 				];
 				return json_encode($alerta);
+				exit();
 	        }
 
 	        # Eliminando imagen anterior #
@@ -971,4 +996,16 @@
 			return json_encode($alerta);
 		}
 
+
+	/*----------  Controlador aceptar contrato de servicio ----------*/
+
+	public function actualizarEstadoServicioControlador(){
+
+		$id=$this->limpiarCadena($_POST['state_id']);
+
+		# Verificando usuario #
+		$datos=mainModel::ejecutarConsulta("SELECT * FROM usuario WHERE usuario_id='$id'");
+
 	}
+
+}

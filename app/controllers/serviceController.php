@@ -166,6 +166,31 @@ class serviceController extends mainModel
 			return json_encode($alerta);
 		}
 
+		# Verificando integridad de los datos
+		$state= "Abierto";
+		if ($this->verificarDatos("[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{3,40}", $state)) {
+			$alerta = [
+				"tipo" => "simple",
+				"titulo" => "Ocurrió un error inesperado",
+				"texto" => "El NOMBRE no coincide con el formato solicitado",
+				"icono" => "error"
+			];
+			return json_encode($alerta);
+		}
+		# Verificando estado de servicio
+		$check_state = mainModel::ejecutarConsulta("SELECT state_id FROM estado WHERE state_tipo='$state'");
+		if ($check_state->rowCount() == 0) {
+			$alerta = [
+				"tipo" => "simple",
+				"titulo" => "Ocurrió un error inesperado",
+				"texto" => "La CATEGORIA de Servicio no esta disponible, disculpe las molestias, por favor intente nuevamente",
+				"icono" => "error"
+			];
+			return json_encode($alerta);
+		} else {
+			$state_id = $check_state->fetchColumn();
+		}
+
 
 		$service_datos_reg = [
 			[
@@ -192,12 +217,19 @@ class serviceController extends mainModel
 				"campo_nombre" => "address_id",
 				"campo_marcador" => ":serv_address",
 				"campo_valor" => $address_id
+			],
+			[
+				"campo_nombre" => "state_id",
+				"campo_marcador" => ":state",
+				"campo_valor" => $state_id
 			]
 		];
 
 		$registrar_service = mainModel::guardarDatos("servicio", $service_datos_reg);
 
 		if ($registrar_service->rowCount() >= 1) {
+
+			
 			$alerta = [
 				"tipo" => "limpiar",
 				"titulo" => "Servicio registrado",
@@ -220,7 +252,7 @@ class serviceController extends mainModel
 
 	
     /*----------  Controlador listar servicio  ----------*/
-    public function listarServiceControlador($pagina, $registros, $url, $busqueda)
+    public function listarServiciosControlador($pagina, $registros, $url, $busqueda)
     {
         // Limpiar y preparar variables
         $pagina = $this->limpiarCadena($pagina);
@@ -683,4 +715,9 @@ class serviceController extends mainModel
 
 		return json_encode($alerta);
 	}
+
+	public function actualizarEstadoServicioControlador(){
+
+	}
+
 }

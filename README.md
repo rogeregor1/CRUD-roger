@@ -10,10 +10,12 @@
 <p>5 - Cuenta de cliente</p>
 <p>Usuario: juan123</p>
 <p>Clave: juan123JP</p>
+<p>Role: Cliente</p>
 
 <p>6 - Cuenta de tecnico</p>
 <p>Usuario: roger123</p>
 <p>Clave: roger123RH</p>
+<p>Rol: Tecnico</p>
 
 
 # ⚠️ SI TE GUSTA MI MUSICA TE AGRADEZCO COMPARTAS EN YOUTUBE ⚠️

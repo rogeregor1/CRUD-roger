@@ -9,7 +9,7 @@ class viewsModel
 	protected function obtenerVistasModelo($vista)
 	{
 
-		$listaBlanca = ["dashBoard", "clienteBoard", "tecnicoBoard", "colaboradorBoard", "userNew", "userList", "userUpdate", "userSearch", "userPhoto", "logOut", "oficioList", "oficioAceptar", "clienteNew", "clienteList", "clienteUpdate", "clienteSearch", "clientePhoto", "serviceSearch", "serviceListContratos", "serviceNewContrato"];
+		$listaBlanca = ["AdministradorBoard", "ClienteBoard", "TecnicoBoard", "ColaboradorBoard", "userNew", "userList", "userUpdate", "userSearch", "userPhoto", "logOut", "ofiElectronica", "ofiCarpinteria", "ofiLimpieza", "ofiInformatica", "ofiReformas", "tecOficioAceptarContrato", "tecOficioAdd", "tecOficioList", "tecOficioSugerencia", "serviceSearch", "serviceListContratos", "serviceNewContrato", "mostrarCarrito", "pagar"];
 
 		if (in_array($vista, $listaBlanca)) {
 			if (is_file("./app/views/content/" . $vista . "-view.php")) {
@@ -19,8 +19,10 @@ class viewsModel
 			}
 		} elseif ($vista == "login" || $vista == "index") {
 			$contenido = "login";
-			/*}elseif($vista=="register"){
-				$contenido="register";*/
+		}elseif($vista=="logRegister"){
+				$contenido="logRegister";
+		}elseif($vista=="recuperarClave"){
+				$contenido="recuperarClave";		
 		} else {
 			$contenido = "404";
 		}

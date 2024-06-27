@@ -246,4 +246,21 @@ class mainModel
 		$tabla .= '</nav>';
 		return $tabla;
 	}
+
+	public function cerrarSesionControlador(){
+
+        $usuario_id = $_SESSION['id'];
+        $bitacora_tipo = 'Cerrar_sesion';
+        $bitacora_detalle = 'Sesión cerrada correctamente';
+        $this->ejecutarConsulta("INSERT INTO bitacora (bitacora_tipo, bitacora_detalle, usuario_id) VALUES ('$bitacora_tipo', '$bitacora_detalle', '$usuario_id')");
+        
+        session_unset();
+        session_destroy();
+
+        if(headers_sent()){
+            echo "<script> window.location.href='".APP_URL."login/'; </script>";
+        } else {
+            header("Location: ".APP_URL."login/");
+        }
+    }
 }

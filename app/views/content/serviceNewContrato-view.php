@@ -1,3 +1,4 @@
+<br><br>
 <div class="container is-fluid mb-6">
 	<h1 class="title">Servicio Asistencia Tecnica(SAT)</h1>
 	<h2 class="subtitle">Pedir Nuevo Servicio SAT</h2>
@@ -7,6 +8,7 @@
 
 	<form class="FormularioAjax" action="<?php echo APP_URL ?>app/ajax/serviceAjax.php" method="POST" autocomplete="off" enctype="multipart/form-data">
 		<input type="hidden" name="modulo_service" value="registrar">
+		<input type="hidden" name="modulo_service" value="updateState">
 
 		<div class="columns">
 			<div class="column">
@@ -18,7 +20,7 @@
 						<option value="Albañilería">Albañilería</option>
 						<option value="Carpinteria" selected>Carpintería</option>
 						<option value="Aire Acondicionado">Aire Acondicionado</option>
-						<option value="Informatica">Informaticao</option>
+						<option value="Informatica">Informatica</option>
 						<option value="Limpieza">Limpieza</option>
 					</select>
 				</div>

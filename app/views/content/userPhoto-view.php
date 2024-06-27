@@ -1,3 +1,4 @@
+<br><br>
 <div class="container is-fluid mb-6">
 	<?php 
 
@@ -15,7 +16,7 @@
 <div class="container pb-6 pt-6">
 	<?php
 	
-		include "./app/views/inc/btn_back.php";
+		include "./assets/inc/btn_back.php";
 
 		$datos=$insLogin->seleccionarDatos("Unico","usuario","usuario_id",$id);
 
@@ -29,9 +30,9 @@
 
 	<div class="columns">
 		<div class="column is-two-fifths">
-            <?php if(is_file("./app/views/fotos/".$datos['usuario_foto'])){ ?>
+            <?php if(is_file("./assets/img/".$datos['usuario_foto'])){ ?>
 			<figure class="image mb-6">
-                <img class="is-rounded" src="<?php echo APP_URL; ?>app/views/fotos/<?php echo $datos['usuario_foto']; ?>">
+                <img class="is-rounded" src="<?php echo APP_URL; ?>assets/img/<?php echo $datos['usuario_foto']; ?>">
 			</figure>
 			
 			<form class="FormularioAjax" action="<?php echo APP_URL; ?>app/ajax/usuarioAjax.php" method="POST" autocomplete="off" >
@@ -45,7 +46,7 @@
 			</form>
 			<?php }else{ ?>
 			<figure class="image mb-6">
-			  	<img class="is-rounded" src="<?php echo APP_URL; ?>app/views/fotos/default.png">
+			  	<img class="is-rounded" src="<?php echo APP_URL; ?>assets/portfolio/default.png">
 			</figure>
 			<?php }?>
 		</div>
@@ -78,7 +79,7 @@
 	</div>
 	<?php
 		}else{
-			include "./app/views/inc/error_alert.php";
+			include "./assetss/inc/error_alert.php";
 		}
 	?>
 </div>

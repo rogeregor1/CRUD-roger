@@ -1,3 +1,4 @@
+<br><br>
 <div class="container is-fluid mb-6">
 	<?php 
 
@@ -15,7 +16,7 @@
 <div class="container pb-6 pt-6">
 	<?php
 	
-		include "./app/views/inc/btn_back.php";
+		include "./assets/inc/btn_back.php";
 
 		$datos=$insLogin->seleccionarDatos("Unico","usuario","usuario_id",$id);
 
@@ -103,7 +104,7 @@
 	</form>
 	<?php
 		}else{
-			include "./app/views/inc/error_alert.php";
+			include "./assets/inc/error_alert.php";
 		}
 	?>
 </div>

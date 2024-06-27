@@ -1,3 +1,4 @@
+<br><br>
 <div class="container is-fluid mb-6">
 	<h1 class="title">Servicios</h1>
 	<h2 class="subtitle">Lista de servicios</h2>
@@ -12,6 +13,6 @@
 
 	$insService = new serviceController();
 
-	echo $insService->listarServiceControlador($url[1], 15, $url[0], "");
+	echo $insService->listarServiciosControlador($url[1], 15, $url[0], "");
 	?>
 </div>
